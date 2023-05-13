@@ -1,6 +1,6 @@
-import { View, Text, StyleSheet, TextInput, FlatList, ActivityIndicator , VirtualizedList, Alert} from 'react-native'
+import { View, Text, StyleSheet, TextInput, FlatList, ActivityIndicator , VirtualizedList, Alert, TouchableOpacity} from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { Input } from 'react-native-elements'
+import { Button, Input } from 'react-native-elements'
 import { TEXT_COLOR, UI_COLOR } from '../Theme/Colors'
 import TypeCard from '../Components/TypeCard';
 import { useFetchAPI } from '../Hooks/useFetchAPI'
@@ -8,7 +8,6 @@ import useFetchPokemonData from '../Hooks/useFetchPokemonData'
 import axios from 'axios';
 import {v4 as uuidv4} from 'uuid';
 import PokemonCard from '../Components/PokemonCard'
-type Props = {}
 type PokemonData ={
   name:string, 
   url:string
@@ -32,7 +31,7 @@ const TYPE_DATA:Array<object> = [
     }
 ]
 
-const MainPage = (props: Props) => {   
+const MainPage = ({navigation}:any) => {   
     const [pokemonData, setPokemonData] = useState<Array<any>>([1]);
     const [pokeballData, setPokeballData] = useState<Array<any>>([]);
     const [detailedLoading,setDetailedLoading] = useState<boolean>(false);
@@ -55,13 +54,12 @@ const MainPage = (props: Props) => {
     }))
       }, 1000);
 
-      console.log(pokemonData);
+      
       return ()=>{
         clearTimeout(timeout)
       }
     },[]);
 
-    console.log(pokeballData, pokemonData)
 
     // fetching data for pokeballs
     useEffect(()=>{
@@ -84,7 +82,9 @@ const MainPage = (props: Props) => {
     },[]);
     
   
-
+    function navigateTo(location:string){
+      navigation.navigate(`${location}`);
+    }
 
   
    
@@ -135,9 +135,11 @@ const MainPage = (props: Props) => {
       numColumns={2}
       ItemSeparatorComponent={() => <View style={{height: 20}} />}
         data={TYPE_DATA}
-        renderItem ={({item} :any)=><TypeCard image={item.image} type={item.type} />}
+        renderItem ={({item} :any)=><TypeCard navigationFunction={navigateTo(item.name)} image={item.image} type={item.type} />}
       />
 
+
+      <Button onPress={()=>navigation.navigate("Fire")} title="Adi" />
 
     
       <Text style={styles.heading}>Pokemon</Text>
@@ -157,7 +159,7 @@ const MainPage = (props: Props) => {
     <FlatList 
     data={pokeballData}
     horizontal={true}
-    renderItem={({item})=><TypeCard type={`${item.name!=undefined ? item.name:'A'}`.charAt(0).toUpperCase()+item.name.slice(1)} image={item.sprites ? item.sprites.default:''}  />}
+    renderItem={({item})=><TypeCard type={`${item.name != undefined ? item.name : 'A'}`.charAt(0).toUpperCase() + item.name.slice(1)} image={item.sprites ? item.sprites.default : ''} />}
     keyExtractor={item=>JSON.stringify(item)}
     ListEmptyComponent={<ActivityIndicator />}
 
