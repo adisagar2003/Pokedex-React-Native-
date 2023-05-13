@@ -4,7 +4,8 @@ import { TEXT_COLOR } from '../Theme/Colors'
 
 type Props = {
     type:string,
-    image:string
+    image:string,
+    navigationFunction:void|never
 }
 
 const styles = StyleSheet.create({
@@ -28,7 +29,7 @@ overflow:'hidden',
 const TypeCard = (props: Props) => {
   return (
     <TouchableOpacity
-
+    onPress={props.navigationFunction}
     style={styles.mainContainer}
 
     >

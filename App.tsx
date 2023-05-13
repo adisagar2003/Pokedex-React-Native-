@@ -14,6 +14,12 @@ import { useFetchAPI } from './src/Hooks/useFetchAPI';
 import { PRIMARY_COLOR, TEXT_COLOR } from './src/Theme/Colors';
 import Sidebar from './src/Components/Sidebar';
 import MainPage from './src/Pages/MainPage';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import GrassType from './src/Pages/GrassType';
+import WaterType from './src/Pages/WaterType';
+import FireType from './src/Pages/FireType';
+import ElectricType from './src/Pages/ElectricType';
 
 function App(): JSX.Element {
   const [isEnabled, setIsEnabled] = useState(false);
@@ -24,29 +30,20 @@ function App(): JSX.Element {
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
+  const Stack = createNativeStackNavigator();
   const styles = StyleSheet.create({
     
   })
   return (
-    <SafeAreaView style={[{height:'100%', backgroundColor:'#191414'}]}>
-      <View style={[{flexDirection:'row', gap:10, alignItems:'center', justifyContent:'center', marginTop:20}]}>
-      <Text style={[{fontWeight:900, color:'#efefef', fontSize:24}]}>Pokedex</Text>
-      <Image
-        source={require('./assets/Pokeball.png')}
-        // eslint-disable-next-line react-native/no-inline-styles
-        style={{width: 40, height: 40}}
-        
-      />  
-      </View>
-
-      {sidebar && (
-        <View style={{position:'absolute', top:0, left:0, height:'100%'}}>
-          <Sidebar setSideBar={isSidebarEnabled} />
-        </View>
-      )}
-
-      <MainPage />
-    </SafeAreaView>
+    <NavigationContainer>
+      <Stack.Navigator>
+      <Stack.Screen name="Home" component={MainPage} />
+      <Stack.Screen name="Fire" component={FireType} />
+      <Stack.Screen name="Grass" component={GrassType} />
+      <Stack.Screen name="Water" component={WaterType} />
+      <Stack.Screen name="Electric" component={ElectricType} />
+    </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 
