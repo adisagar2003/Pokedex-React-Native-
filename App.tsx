@@ -28,15 +28,18 @@ function App(): JSX.Element {
   const toggleSwitch = () => setIsEnabled(isEnabled => !isEnabled);
   const colorScheme = useColorScheme();
   const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+    backgroundColor: isDarkMode ? Colors.darker : Colors.darker,
   };
   const Stack = createNativeStackNavigator();
   const styles = StyleSheet.create({
     
   })
   return (
+    
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator screenOptions={{
+headerShown: false
+}} >
       <Stack.Screen name="Home" component={MainPage} />
       <Stack.Screen name="Fire" component={FireType} />
       <Stack.Screen name="Grass" component={GrassType} />

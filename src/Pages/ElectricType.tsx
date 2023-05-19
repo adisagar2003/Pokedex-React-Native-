@@ -1,12 +1,45 @@
-import { View, Text } from 'react-native'
-import React from 'react'
+import { View, Text , ScrollView, FlatList, ActivityIndicator} from 'react-native'
+import React, {useEffect, useState} from 'react'
+import { Button } from 'react-native-elements'
+import TypeCard from '../Components/TypeCard';
+import PokemonCard from '../Components/PokemonCard';
+import { PIKACHU_SAMPLE } from '../Data/samplePokemon';
 
-type Props = {}
 
-const ElectricType = (props: Props) => {
+const ElectricType = ({navigation}:any) => {
+
+  
+  //States for fire pokemon 
+  const [firePokemon, setPokemon] = useState<Array<any>>([]);
+  const [loading, setLoading] = useState(true);
+  // Fetch Fire Type Pokemon
+  useEffect(()=>{
+    let temp:Array<any>=[];
+        fetch('https://pokeapi.co/api/v2/type/13').then(response=>response.json()).then(response=>{
+         
+          response.pokemon.map((poke: any)=>{
+           
+            fetch(poke.pokemon.url).then(response=>response.json()).then(response=>temp.push(response));
+            setPokemon(temp);
+          });
+        
+  }).finally(()=>{
+    console.log('done');
+    setLoading(false);
+    setPokemon([...firePokemon,PIKACHU_SAMPLE ])
+  })},[]);
+
+
+
   return (
-    <View>
-      <Text>ElectricType</Text>
+    <View style={{backgroundColor:'#272727', flex:1, alignContent:'center', justifyContent:'center', alignItems:'center'}}>
+      <Button title="back" onPress={()=>navigation.navigate('Home')} />
+      <FlatList
+          data={firePokemon}
+          renderItem={({item}:any)=> <PokemonCard name={item.name} image={item.sprites.front_default} />}
+          keyExtractor={item=>item.id} 
+          ListEmptyComponent={<ActivityIndicator />}
+          />
     </View>
   )
 }

@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TextInput, FlatList, ActivityIndicator , VirtualizedList, Alert, TouchableOpacity} from 'react-native'
+import { View, Text, StyleSheet, TextInput, FlatList, ActivityIndicator , VirtualizedList, Alert, TouchableOpacity, ImageBackground} from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Button, Input } from 'react-native-elements'
 import { TEXT_COLOR, UI_COLOR } from '../Theme/Colors'
@@ -7,7 +7,8 @@ import { useFetchAPI } from '../Hooks/useFetchAPI'
 import useFetchPokemonData from '../Hooks/useFetchPokemonData'
 import axios from 'axios';
 import {v4 as uuidv4} from 'uuid';
-import PokemonCard from '../Components/PokemonCard'
+import PokemonCard from '../Components/PokemonCard';
+import {} from '../../assets/Pokeball.png'
 type PokemonData ={
   name:string, 
   url:string
@@ -60,7 +61,7 @@ const MainPage = ({navigation}:any) => {
       }
     },[]);
 
-
+    const pokeballUri = require('../../assets/Pokeball.png');
     // fetching data for pokeballs
     useEffect(()=>{
       const timeout = setTimeout(()=>{
@@ -92,7 +93,8 @@ const MainPage = ({navigation}:any) => {
         mainContainer:{
             display:'flex',
             flexDirection:'column',
-            marginLeft:17
+            flex:1,
+            backgroundColor:'#272727'
         },
         searchbar:{
             display:'flex',
@@ -100,7 +102,7 @@ const MainPage = ({navigation}:any) => {
             flexDirection:'row',
             padding:4,
             width: '100%',
-            alignItems:'center',
+ 
             marginTop:10
         },
         input: {
@@ -119,11 +121,34 @@ const MainPage = ({navigation}:any) => {
             color:TEXT_COLOR,
             fontSize:28,
             fontWeight:"600",
-            marginLeft:12
+            marginLeft:12,
+          },
+          pokeballContainer:{
+        height:100,
+        marginTop:4,       
+        alignSelf: 'stretch',
+        justifyContent:'center',
+        alignItems:'center'
+          },
+          typeGrid:{
+           height:400,
+           marginLeft:18,
+           rowGap:4
+          },
+          typeDataContainer:{
+            height:330,
+            alignItems:'center'
           }
     })
   return (
     <View style={styles.mainContainer}>
+      <View style={styles.pokeballContainer}>
+        <ImageBackground
+        style={{width: 100, height:100}}
+        source={pokeballUri}
+
+        />
+      </View>
       <View style={styles.searchbar}>
         <TextInput
         style={styles.input}
@@ -131,23 +156,25 @@ const MainPage = ({navigation}:any) => {
         placeholderTextColor={TEXT_COLOR}
       />
       </View>
+      {/* Rendering Type Data */}
+      <View style={styles.typeDataContainer}>
       <FlatList 
       numColumns={2}
-      ItemSeparatorComponent={() => <View style={{height: 20}} />}
+      ItemSeparatorComponent={() => <View style={{height: 20, width:20}} />}
         data={TYPE_DATA}
-        renderItem ={({item} :any)=><TypeCard navigationFunction={navigateTo(item.name)} image={item.image} type={item.type} />}
+      style={styles.typeGrid}
+        renderItem ={({item} :any)=><TouchableOpacity  onPress={()=>navigation.navigate(`${item.type}`)}><TypeCard image={item.image} type={item.type} /></TouchableOpacity>}
       />
+</View>
 
-
-      <Button onPress={()=>navigation.navigate("Fire")} title="Adi" />
 
     
       <Text style={styles.heading}>Pokemon</Text>
-   
+      
       <FlatList 
     data={pokemonData}
     horizontal={true}
-    renderItem={({item})=><TypeCard type={`${item.name!=undefined ? item.name:'Loading...'}`} image={item.sprites ? item.sprites.front_default:''}  />}
+    renderItem={({item})=><TypeCard type={`${item.name != undefined ? item.name : 'Loading...'}`} image={item.sprites ? item.sprites.front_default : ''}  />}
     keyExtractor={item=>JSON.stringify(item)}
     ListEmptyComponent={<ActivityIndicator />}
 
@@ -159,7 +186,7 @@ const MainPage = ({navigation}:any) => {
     <FlatList 
     data={pokeballData}
     horizontal={true}
-    renderItem={({item})=><TypeCard type={`${item.name != undefined ? item.name : 'A'}`.charAt(0).toUpperCase() + item.name.slice(1)} image={item.sprites ? item.sprites.default : ''} />}
+    renderItem={({item})=><TypeCard type={`${item.name != undefined ? item.name : 'A'}` + item.name.slice(1)} image={item.sprites ? item.sprites.default : ''}/>}
     keyExtractor={item=>JSON.stringify(item)}
     ListEmptyComponent={<ActivityIndicator />}
 
